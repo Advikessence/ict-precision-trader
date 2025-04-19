@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICT Precision Trader</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="logo-icon">📊</span>
+            <h1>ICT Precision Trader</h1>
+        </div>
+        <div class="controls">
+            <select id="currencyPair">
+                <option value="EUR/USD" selected>EUR/USD</option>
+                <option value="GBP/USD">GBP/USD</option>
+                <option value="USD/JPY">USD/JPY</option>
+                <option value="AUD/USD">AUD/USD</option>
+                <option value="XAU/USD">XAU/USD</option>
+            </select>
+            <button id="settingsBtn" class="settings-btn">⚙️ Settings</button>
+        </div>
+    </header>
+
+    <main>
+        <div class="main-container">
+            <section class="market-info">
+                <div class="title-bar">
+                    <h2>EUR/USD 4H</h2>
+                    <span class="price">1.07842 <span class="positive">+0.12%</span></span>
+                </div>
+
+                <div class="signal-status">
+                    <h3>Signal Status</h3>
+                    <div class="status-item">
+                        <span>EUR/USD - Sweep Detection</span>
+                        <span class="status analyzing">Analyzing</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Range Identified</span>
+                        <span class="status yes">Yes</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Liquidity Sweep</span>
+                        <span class="status pending">Pending</span>
+                    </div>
+                    <div class="status-item">
+                        <span>CISD Detected</span>
+                        <span class="status na">N/A</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Entry Zone Ready</span>
+                        <span class="status na">N/A</span>
+                    </div>
+                </div>
+
+                <div class="range-analysis">
+                    <h3>Range Analysis</h3>
+                    <div class="range-grid">
+                        <div class="range-high">
+                            <h4>Range High</h4>
+                            <div class="range-value">1.08254</div>
+                            <div class="current-position negative">
+                                Current: 1.07842 (-41.2 pips from high)
+                            </div>
+                        </div>
+                        <div class="range-low">
+                            <h4>Range Low</h4>
+                            <div class="range-value">1.07625</div>
+                            <div class="current-position positive">
+                                Current: 1.07842 (+21.7 pips from low)
+                            </div>
+                        </div>
+                    </div>
+                    <div class="range-width">
+                        <span>Range Width: 62.9 pips</span>
+                        <span>Position in Range: 34.5% from bottom</span>
+                    </div>
+                    <div class="range-progress">
+                        <div class="progress-bar">
+                            <div class="progress-marker" style="left: 34.5%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="potential-setups">
+                    <h3>Potential Setups</h3>
+                    <div class="setup-grid">
+                        <div class="setup buy">
+                            <div class="setup-type">BUY</div>
+                            <div class="setup-desc">
+                                Sweep of range low expected, followed by CISD
+                            </div>
+                            <div class="setup-levels">
+                                <div class="level">
+                                    <span>Entry</span>
+                                    <span>1.07645</span>
+                                </div>
+                                <div class="level">
+                                    <span>SL</span>
+                                    <span>1.07580</span>
+                                </div>
+                                <div class="level">
+                                    <span>TP</span>
+                                    <span>1.07840</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="setup sell">
+                            <div class="setup-type">SELL</div>
+                            <div class="setup-desc">
+                                Sweep of range high with weak momentum
+                            </div>
+                            <div class="setup-levels">
+                                <div class="level">
+                                    <span>Entry</span>
+                                    <span>1.08275</span>
+                                </div>
+                                <div class="level">
+                                    <span>SL</span>
+                                    <span>1.08340</span>
+                                </div>
+                                <div class="level">
+                                    <span>TP</span>
+                                    <span>1.08080</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="setup-note">
+                        Projected setups based on ICT patterns and current market conditions
+                    </div>
+                </div>
+                
+                <div class="active-signals">
+                    <h3>Active Signals <span class="active-count">3 active</span></h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Pair</th>
+                                    <th>Type</th>
+                                    <th>Entry</th>
+                                    <th>Stop Loss</th>
+                                    <th>Target</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>2023-05-15 10:25</td>
+                                    <td>GBP/USD</td>
+                                    <td><span class="signal-buy">BUY</span></td>
+                                    <td>1.2472</td>
+                                    <td>1.2442</td>
+                                    <td>1.2562</td>
+                                    <td><span class="status-active">Active</span></td>
+                                    <td><button class="action-btn">Close</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2023-05-15 14:45</td>
+                                    <td>XAU/USD</td>
+                                    <td><span class="signal-sell">SELL</span></td>
+                                    <td>2024.58</td>
+                                    <td>2031.22</td>
+                                    <td>2004.67</td>
+                                    <td><span class="status-active">Active</span></td>
+                                    <td><button class="action-btn">Close</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2023-05-15 07:30</td>
+                                    <td>EUR/USD</td>
+                                    <td><span class="signal-buy">BUY</span></td>
+                                    <td>1.0765</td>
+                                    <td>1.0745</td>
+                                    <td>1.0825</td>
+                                    <td><span class="positive">+37 pips</span></td>
+                                    <td><button class="action-btn detail">Details</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2023-05-14 22:15</td>
+                                    <td>USD/JPY</td>
+                                    <td><span class="signal-sell">SELL</span></td>
+                                    <td>155.84</td>
+                                    <td>156.24</td>
+                                    <td>154.64</td>
+                                    <td><span class="status-stopped">Stopped</span></td>
+                                    <td><button class="action-btn detail">Details</button></td>
+                                </tr>
+                                <tr>
+                                    <td>2023-05-14 18:40</td>
+                                    <td>AUD/USD</td>
+                                    <td><span class="signal-buy">BUY</span></td>
+                                    <td>0.6582</td>
+                                    <td>0.6562</td>
+                                    <td>0.6642</td>
+                                    <td><span class="status-target">Target Hit</span></td>
+                                    <td><button class="action-btn detail">Details</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section class="strategy-guide">
+                <h3>ICT Strategy Guide</h3>
+                <div class="guide-content">
+                    <h4>Overview</h4>
+                    <p>
+                        This strategy uses ICT (Inner Circle Trader) concepts based on liquidity, smart money manipulation, and time-based candle ranges to capture high-probability trade setups during the NY session.
+                    </p>
+
+                    <h4>Step-by-Step Guide</h4>
+                    
+                    <div class="guide-step">
+                        <h5>Step 1: Use the 4-Hour Timeframe</h5>
+                        <ul>
+                            <li>Go to the 4-hour chart.</li>
+                            <li>Mark the High and Low of the 4-hour candle from 9:00 PM to 1:00 AM (New York time).</li>
+                            <li>This candle range represents the liquidity zone for the session.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-step">
+                        <h5>Step 2: Drop to the 3-Minute Timeframe</h5>
+                        <ul>
+                            <li>Once the range is marked, move to the 3-minute chart.</li>
+                            <li>This smaller timeframe allows for precision entries.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-step">
+                        <h5>Step 3: Wait for a Liquidity Sweep</h5>
+                        <ul>
+                            <li>Watch for price to sweep either the High or Low of the marked 4H candle.</li>
+                            <li>This indicates a liquidity grab — a common manipulation before the real move.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-step">
+                        <h5>Step 4: Wait for CISD (Change in State of Delivery)</h5>
+                        <ul>
+                            <li>After the sweep, wait for a market structure shift (e.g., break of internal structure or BOS).</li>
+                            <li>This confirms a potential reversal and indicates smart money is active.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-step">
+                        <h5>Step 5: Enter the Trade</h5>
+                        <ul>
+                            <li>Look for an entry at one of the following zones:</li>
+                            <li>FVG (Fair Value Gap)</li>
+                            <li>BB (Breaker Block) Range</li>
+                            <li>OB (Order Block)</li>
+                            <li>These are institutional price levels where price often reacts.</li>
+                        </ul>
+                    </div>
+
+                    <div class="guide-step">
+                        <h5>Step 6: Set Stop Loss and Target</h5>
+                        <ul>
+                            <li>Place your SL (Stop Loss) according to Safe SL Theory just above/below the sweep or structure.</li>
+                            <li>Target a 1:3 Risk-to-Reward Ratio (RRR) or more.</li>
+                        </ul>
+                    </div>
+
+                    <h4>Pro Tips</h4>
+                    <ul class="pro-tips">
+                        <li>Be patient; let the sweep and CISD play out before entering.</li>
+                        <li>Always confirm with price action or liquidity reaction.</li>
+                        <li>Use time-of-day confluence for best results (especially during NY Open or London-NY overlap).</li>
+                        <li>Some pairs like EUR/USD and GBP/USD show stronger ICT patterns during specific sessions.</li>
+                        <li>Gold (XAU/USD) often shows exaggerated sweeps before reversals.</li>
+                    </ul>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>© 2023 ICT Precision Trader. All rights reserved.</p>
+            <div class="social-links">
+                <a href="#" class="social-link">Discord</a>
+                <a href="#" class="social-link">Telegram</a>
+                <a href="#" class="social-link">Twitter</a>
+            </div>
+        </div>
+    </footer>
+
+    <div id="settingsModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Trading Settings</h2>
+            
+            <div class="settings-section">
+                <h3>Market Selection</h3>
+                <div class="setting-group">
+                    <label>Instrument Type</label>
+                    <div class="button-group">
+                        <button class="option-btn active">Forex</button>
+                        <button class="option-btn">Gold</button>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label>Currency Pair</label>
+                    <select id="settingsPair">
+                        <option value="EUR/USD">EUR/USD</option>
+                        <option value="GBP/USD">GBP/USD</option>
+                        <option value="USD/JPY">USD/JPY</option>
+                        <option value="AUD/USD">AUD/USD</option>
+                        <option value="XAU/USD">XAU/USD</option>
+                    </select>
+                </div>
+                
+                <div class="setting-group">
+                    <label>Timeframe</label>
+                    <div class="button-group">
+                        <button class="option-btn active">4H</button>
+                        <button class="option-btn">1H</button>
+                        <button class="option-btn">15M</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-section">
+                <h3>Strategy Settings</h3>
+                <div class="setting-group">
+                    <label>NY Range Time</label>
+                    <div class="time-range">
+                        <select id="rangeStart">
+                            <option value="9:00 PM">9:00 PM</option>
+                            <option value="8:00 PM">8:00 PM</option>
+                            <option value="10:00 PM">10:00 PM</option>
+                        </select>
+                        <span>to</span>
+                        <select id="rangeEnd">
+                            <option value="1:00 AM">1:00 AM</option>
+                            <option value="12:00 AM">12:00 AM</option>
+                            <option value="2:00 AM">2:00 AM</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label>Risk-Reward Ratio: 3.0</label>
+                    <input type="range" min="1" max="5" value="3" step="0.5" id="rrrSlider">
+                </div>
+                
+                <div class="setting-group">
+                    <label>Entry Zones</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="fvgCheck" checked>
+                            <label for="fvgCheck">FVG (Fair Value Gap)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bbCheck" checked>
+                            <label for="bbCheck">BB Range (Breaker Block)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="obCheck" checked>
+                            <label for="obCheck">OB (Order Block)</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="setting-group">
+                    <label>Detection Algorithm Sensitivity</label>
+                    <div class="sensitivity-slider">
+                        <span>Low</span>
+                        <input type="range" min="1" max="10" value="5" id="sensitivitySlider">
+                        <span>High</span>
+                    </div>
+                </div>
+                
+                <button id="applySettings" class="apply-btn">Apply Settings</button>
+            </div>
+        </div>
+    </div>
+    
+    <script src="script.js"></script>
+</body>
+</html>
