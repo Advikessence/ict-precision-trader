@@ -3,506 +3,1100 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ICT Precision Trader</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>ICT Precision Trader - Advanced Trading Platform</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/boxicons@2.1.4/css/boxicons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.css">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --dark: #1e293b;
+            --light: #f8fafc;
+            --gray: #64748b;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', sans-serif;
+            background-color: #f1f5f9;
+            color: #0f172a;
+            line-height: 1.6;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+        }
+        
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+        }
+        
+        .card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .trading-card {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .signal-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .signal-active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+        
+        .signal-pending {
+            background-color: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+        
+        .signal-inactive {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+        
+        .chart-container {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 1.5rem;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #94a3b8;
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #64748b;
+        }
+        
+        /* Stats counter animation */
+        .counter-value {
+            transition: all 0.3s ease;
+        }
+        
+        /* Table styles */
+        .data-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+        
+        .data-table th {
+            background-color: #f1f5f9;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Blinking animation for real-time updates */
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .real-time-update {
+            animation: blink 1.5s infinite;
+        }
+        
+        /* Strategy steps */
+        .strategy-step {
+            position: relative;
+            padding-left: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .strategy-step::before {
+            content: attr(data-step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.75rem;
+            height: 1.75rem;
+            background-color: var(--primary);
+            color: white;
+            border-radius: 50%;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+        
+        .strategy-step::after {
+            content: '';
+            position: absolute;
+            left: 0.875rem;
+            top: 1.75rem;
+            width: 2px;
+            height: calc(100% - 0.5rem);
+            background-color: #e2e8f0;
+            transform: translateX(-50%);
+        }
+        
+        .strategy-step:last-child::after {
+            display: none;
+        }
+        
+        /* Currency pair cards */
+        .currency-card {
+            border-left: 5px solid transparent;
+            transition: all 0.2s ease;
+        }
+        
+        .currency-card.bullish {
+            border-left-color: var(--secondary);
+        }
+        
+        .currency-card.bearish {
+            border-left-color: var(--danger);
+        }
+        
+        .currency-card.neutral {
+            border-left-color: var(--warning);
+        }
+        
+        /* Market status indicator */
+        .market-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .market-status .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #cbd5e1;
+        }
+        
+        .market-status.open .status-dot {
+            background-color: #10b981;
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+        }
+        
+        .market-status.closed .status-dot {
+            background-color: #ef4444;
+            box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <span class="logo-icon">📊</span>
-            <h1>ICT Precision Trader</h1>
-        </div>
-        <div class="controls">
-            <select id="currencyPair">
-                <option value="EUR/USD" selected>EUR/USD</option>
-                <option value="GBP/USD">GBP/USD</option>
-                <option value="USD/JPY">USD/JPY</option>
-                <option value="AUD/USD">AUD/USD</option>
-                <option value="XAU/USD">XAU/USD</option>
-            </select>
-            <button id="settingsBtn" class="settings-btn">⚙️ Settings</button>
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="flex flex-col md:flex-row items-center justify-between">
+                <div class="flex items-center mb-4 md:mb-0">
+                    <i class="bx bx-line-chart text-4xl mr-3"></i>
+                    <div>
+                        <h1 class="text-2xl md:text-3xl font-bold">ICT Precision Trader</h1>
+                        <p class="text-blue-100">Advanced Smart Money Trading</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <div class="market-status open">
+                        <span class="status-dot"></span>
+                        <span id="market-status-text">Markets Open</span>
+                    </div>
+                    <div class="flex items-center">
+                        <i class="bx bx-time-five mr-2"></i>
+                        <span id="current-time">Loading...</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
-    <main>
-        <div class="<section class="market-info">
-    <div class="title-bar">
-        <h2 id="pairTitle">EUR/USD 4H</h2>
-        <span class="price" id="currentPrice">Loading...</span>
-    </div>
-
-    <!-- TradingView Chart Widget -->
-    <div class="chart-container">
-        <div id="tradingview_chart"></div>
-    </div>
-
-    <div class="signal-status">
-        <h3>Signal Status</h3>
-        <div class="status-item">
-            <span id="pairStatus">EUR/USD - Sweep Detection</span>
-            <span class="status analyzing" id="sweepStatus">Analyzing</span>
-        </div>
-        <div class="status-item">
-            <span>Range Identified</span>
-            <span class="status yes" id="rangeStatus">Yes</span>
-        </div>
-        <div class="status-item">
-            <span>Liquidity Sweep</span>
-            <span class="status pending" id="liquidityStatus">Pending</span>
-        </div>
-        <div class="status-item">
-            <span>CISD Detected</span>
-            <span class="status na" id="cisdStatus">N/A</span>
-        </div>
-        <div class="status-item">
-            <span>Entry Zone Ready</span>
-            <span class="status na" id="entryStatus">N/A</span>
-        </div>
-    </div>
-
-    <div class="range-analysis">
-        <h3>Range Analysis</h3>
-        <div class="range-grid">
-            <div class="range-high">
-                <h4>Range High</h4>
-                <div class="range-value" id="rangeHigh">Loading...</div>
-                <div class="current-position" id="highPosition">
-                    Current: Loading...
-                </div>
-            </div>
-            <div class="range-low">
-                <h4>Range Low</h4>
-                <div class="range-value" id="rangeLow">Loading...</div>
-                <div class="current-position" id="lowPosition">
-                    Current: Loading...
-                </div>
-            </div>
-        </div>
-        <div class="range-width">
-            <span id="rangeWidth">Range Width: -- pips</span>
-            <span id="rangePosition">Position in Range: --%</span>
-        </div>
-        <div class="range-progress">
-            <div class="progress-bar">
-                <div class="progress-marker" id="positionMarker"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="potential-setups">
-        <h3>Potential Setups</h3>
-        <div class="setup-grid">
-            <div class="setup buy">
-                <div class="setup-type">BUY</div>
-                <div class="setup-desc" id="buyDesc">
-                    Sweep of range low expected, followed by CISD
-                </div>
-                <div class="setup-levels">
-                    <div class="level">
-                        <span>Entry</span>
-                        <span id="buyEntry">-</span>
-                    </div>
-                    <div class="level">
-                        <span>SL</span>
-                        <span id="buySL">-</span>
-                    </div>
-                    <div class="level">
-                        <span>TP</span>
-                        <span id="buyTP">-</span>
-                    </div>
-                </div>
-            </div>
-            <div class="setup sell">
-                <div class="setup-type">SELL</div>
-                <div class="setup-desc" id="sellDesc">
-                    Sweep of range high with weak momentum
-                </div>
-                <div class="setup-levels">
-                    <div class="level">
-                        <span>Entry</span>
-                        <span id="sellEntry">-</span>
-                    </div>
-                    <div class="level">
-                        <span>SL</span>
-                        <span id="sellSL">-</span>
-                    </div>
-                    <div class="level">
-                        <span>TP</span>
-                        <span id="sellTP">-</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="setup-note">
-            Projected setups based on ICT patterns and current market conditions
-        </div>
-    </div>
-    
-    <!-- Rest of your existing code for active signals... -->
-</section>
-">
-            <section class="market-info">
-                <div class="title-bar">
-                    <h2>EUR/USD 4H</h2>
-                    <span class="price">1.07842 <span class="positive">+0.12%</span></span>
-                </div>
-
-                <div class="signal-status">
-                    <h3>Signal Status</h3>
-                    <div class="status-item">
-                        <span>EUR/USD - Sweep Detection</span>
-                        <span class="status analyzing">Analyzing</span>
-                    </div>
-                    <div class="status-item">
-                        <span>Range Identified</span>
-                        <span class="status yes">Yes</span>
-                    </div>
-                    <div class="status-item">
-                        <span>Liquidity Sweep</span>
-                        <span class="status pending">Pending</span>
-                    </div>
-                    <div class="status-item">
-                        <span>CISD Detected</span>
-                        <span class="status na">N/A</span>
-                    </div>
-                    <div class="status-item">
-                        <span>Entry Zone Ready</span>
-                        <span class="status na">N/A</span>
-                    </div>
-                </div>
-
-                <div class="range-analysis">
-                    <h3>Range Analysis</h3>
-                    <div class="range-grid">
-                        <div class="range-high">
-                            <h4>Range High</h4>
-                            <div class="range-value">1.08254</div>
-                            <div class="current-position negative">
-                                Current: 1.07842 (-41.2 pips from high)
-                            </div>
+    <!-- Dashboard Stats -->
+    <section class="py-6 bg-white border-b border-gray-200">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="card bg-white p-4">
+                    <div class="flex items-center">
+                        <div class="rounded-full bg-blue-100 p-3 mr-4">
+                            <i class="bx bx-signal-5 text-blue-600 text-xl"></i>
                         </div>
-                        <div class="range-low">
-                            <h4>Range Low</h4>
-                            <div class="range-value">1.07625</div>
-                            <div class="current-position positive">
-                                Current: 1.07842 (+21.7 pips from low)
-                            </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">Active Signals</p>
+                            <h3 class="text-2xl font-bold counter-value" id="active-signals">8</h3>
                         </div>
-                    </div>
-                    <div class="range-width">
-                        <span>Range Width: 62.9 pips</span>
-                        <span>Position in Range: 34.5% from bottom</span>
-                    </div>
-                    <div class="range-progress">
-                        <div class="progress-bar">
-                            <div class="progress-marker" style="left: 34.5%"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="potential-setups">
-                    <h3>Potential Setups</h3>
-                    <div class="setup-grid">
-                        <div class="setup buy">
-                            <div class="setup-type">BUY</div>
-                            <div class="setup-desc">
-                                Sweep of range low expected, followed by CISD
-                            </div>
-                            <div class="setup-levels">
-                                <div class="level">
-                                    <span>Entry</span>
-                                    <span>1.07645</span>
-                                </div>
-                                <div class="level">
-                                    <span>SL</span>
-                                    <span>1.07580</span>
-                                </div>
-                                <div class="level">
-                                    <span>TP</span>
-                                    <span>1.07840</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="setup sell">
-                            <div class="setup-type">SELL</div>
-                            <div class="setup-desc">
-                                Sweep of range high with weak momentum
-                            </div>
-                            <div class="setup-levels">
-                                <div class="level">
-                                    <span>Entry</span>
-                                    <span>1.08275</span>
-                                </div>
-                                <div class="level">
-                                    <span>SL</span>
-                                    <span>1.08340</span>
-                                </div>
-                                <div class="level">
-                                    <span>TP</span>
-                                    <span>1.08080</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setup-note">
-                        Projected setups based on ICT patterns and current market conditions
                     </div>
                 </div>
                 
-                <div class="active-signals">
-                    <h3>Active Signals <span class="active-count">3 active</span></h3>
-                    <div class="table-container">
-                        <table>
+                <div class="card bg-white p-4">
+                    <div class="flex items-center">
+                        <div class="rounded-full bg-green-100 p-3 mr-4">
+                            <i class="bx bx-trending-up text-green-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">Win Rate</p>
+                            <h3 class="text-2xl font-bold counter-value" id="win-rate">82%</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-white p-4">
+                    <div class="flex items-center">
+                        <div class="rounded-full bg-purple-100 p-3 mr-4">
+                            <i class="bx bx-chart text-purple-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">Currency Pairs</p>
+                            <h3 class="text-2xl font-bold counter-value" id="currency-pairs">14</h3>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card bg-white p-4">
+                    <div class="flex items-center">
+                        <div class="rounded-full bg-yellow-100 p-3 mr-4">
+                            <i class="bx bx-dollar-circle text-yellow-600 text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-gray-500 text-sm">Avg. RR Ratio</p>
+                            <h3 class="text-2xl font-bold counter-value" id="avg-rr">1:3.2</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 md:px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Left Column - Strategy & Signals -->
+            <div class="lg:col-span-2">
+                <!-- Market Overview Chart -->
+                <div class="card bg-white p-6 mb-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold">Market Overview</h2>
+                        <div class="flex space-x-2">
+                            <button class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md chart-timeframe active" data-timeframe="1D">1D</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md chart-timeframe" data-timeframe="1W">1W</button>
+                            <button class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md chart-timeframe" data-timeframe="1M">1M</button>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="market-overview-chart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- ICT Strategy Guide -->
+                <div class="card bg-white p-6 mb-8">
+                    <div class="flex items-center mb-4">
+                        <i class="bx bx-book-open text-blue-600 text-2xl mr-3"></i>
+                        <h2 class="text-xl font-bold">ICT Precision Trading Strategy</h2>
+                    </div>
+                    
+                    <p class="text-gray-700 mb-6">This strategy uses ICT (Inner Circle Trader) concepts based on liquidity, smart money manipulation, and time-based candle ranges to capture high-probability trade setups during the NY session.</p>
+                    
+                    <div class="strategy-step" data-step="1">
+                        <h3 class="font-semibold text-lg">Use the 4-Hour Timeframe</h3>
+                        <p class="text-gray-700">Go to the 4-hour chart and mark the High and Low of the 4-hour candle from 9:00 PM to 1:00 AM (New York time). This candle range represents the liquidity zone for the session.</p>
+                    </div>
+                    
+                    <div class="strategy-step" data-step="2">
+                        <h3 class="font-semibold text-lg">Drop to the 3-Minute Timeframe</h3>
+                        <p class="text-gray-700">Once the range is marked, move to the 3-minute chart. This smaller timeframe allows for precision entries.</p>
+                    </div>
+                    
+                    <div class="strategy-step" data-step="3">
+                        <h3 class="font-semibold text-lg">Wait for a Liquidity Sweep</h3>
+                        <p class="text-gray-700">Watch for price to sweep either the High or Low of the marked 4H candle. This indicates a liquidity grab — a common manipulation before the real move.</p>
+                    </div>
+                    
+                    <div class="strategy-step" data-step="4">
+                        <h3 class="font-semibold text-lg">Wait for CISD (Change in State of Delivery)</h3>
+                        <p class="text-gray-700">After the sweep, wait for a market structure shift (e.g., break of internal structure or BOS). This confirms a potential reversal and indicates smart money is active.</p>
+                    </div>
+                    
+                    <div class="strategy-step" data-step="5">
+                        <h3 class="font-semibold text-lg">Enter the Trade</h3>
+                        <p class="text-gray-700">Look for an entry at one of the following zones:</p>
+                        <ul class="list-disc pl-5 mt-2 text-gray-700">
+                            <li>FVG (Fair Value Gap)</li>
+                            <li>BB (Breaker Block) Range</li>
+                            <li>OB (Order Block)</li>
+                        </ul>
+                        <p class="text-gray-700 mt-2">These are institutional price levels where price often reacts.</p>
+                    </div>
+                    
+                    <div class="strategy-step" data-step="6">
+                        <h3 class="font-semibold text-lg">Set Stop Loss and Target</h3>
+                        <p class="text-gray-700">Place your SL (Stop Loss) according to Safe SL Theory just above/below the sweep or structure. Target a 1:3 Risk-to-Reward Ratio (RRR) or more.</p>
+                    </div>
+                    
+                    <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+                        <h3 class="font-semibold text-lg text-blue-800 mb-2">Pro Tips</h3>
+                        <ul class="space-y-2 text-gray-700">
+                            <li class="flex items-start">
+                                <i class="bx bx-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Be patient; let the sweep and CISD play out before entering.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="bx bx-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Always confirm with price action or liquidity reaction.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="bx bx-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Use time-of-day confluence for best results (especially during NY Open or London-NY overlap).</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="bx bx-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Some pairs like EUR/USD and GBP/USD show stronger ICT patterns during specific sessions.</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="bx bx-check-circle text-blue-600 mt-1 mr-2"></i>
+                                <span>Gold (XAU/USD) often shows exaggerated sweeps before reversals.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- Active Signals -->
+                <div class="card bg-white p-6 mb-8">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center">
+                            <i class="bx bx-broadcast text-green-600 text-2xl mr-3"></i>
+                            <h2 class="text-xl font-bold">Active Trading Signals</h2>
+                        </div>
+                        <span class="real-time-update px-3 py-1 text-xs bg-green-100 text-green-700 rounded-full flex items-center">
+                            <span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+                            Updating Live
+                        </span>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th>Time</th>
                                     <th>Pair</th>
-                                    <th>Type</th>
+                                    <th>Signal</th>
                                     <th>Entry</th>
                                     <th>Stop Loss</th>
-                                    <th>Target</th>
+                                    <th>Take Profit</th>
+                                    <th>R:R</th>
+                                    <th>Time</th>
                                     <th>Status</th>
-                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>2023-05-15 10:25</td>
-                                    <td>GBP/USD</td>
-                                    <td><span class="signal-buy">BUY</span></td>
-                                    <td>1.2472</td>
-                                    <td>1.2442</td>
-                                    <td>1.2562</td>
-                                    <td><span class="status-active">Active</span></td>
-                                    <td><button class="action-btn">Close</button></td>
+                                    <td class="font-semibold">EUR/USD</td>
+                                    <td>
+                                        <span class="signal-badge signal-active">BUY</span>
+                                    </td>
+                                    <td>1.0742</td>
+                                    <td>1.0722</td>
+                                    <td>1.0802</td>
+                                    <td>1:3</td>
+                                    <td>10:35 EST</td>
+                                    <td>
+                                        <span class="flex items-center text-green-600">
+                                            <i class="bx bx-check-circle mr-1"></i> Active
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>2023-05-15 14:45</td>
-                                    <td>XAU/USD</td>
-                                    <td><span class="signal-sell">SELL</span></td>
-                                    <td>2024.58</td>
-                                    <td>2031.22</td>
-                                    <td>2004.67</td>
-                                    <td><span class="status-active">Active</span></td>
-                                    <td><button class="action-btn">Close</button></td>
+                                    <td class="font-semibold">GBP/JPY</td>
+                                    <td>
+                                        <span class="signal-badge signal-active">SELL</span>
+                                    </td>
+                                    <td>190.85</td>
+                                    <td>191.25</td>
+                                    <td>189.65</td>
+                                    <td>1:3</td>
+                                    <td>11:20 EST</td>
+                                    <td>
+                                        <span class="flex items-center text-green-600">
+                                            <i class="bx bx-check-circle mr-1"></i> Active
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>2023-05-15 07:30</td>
-                                    <td>EUR/USD</td>
-                                    <td><span class="signal-buy">BUY</span></td>
-                                    <td>1.0765</td>
-                                    <td>1.0745</td>
-                                    <td>1.0825</td>
-                                    <td><span class="positive">+37 pips</span></td>
-                                    <td><button class="action-btn detail">Details</button></td>
+                                    <td class="font-semibold">XAU/USD</td>
+                                    <td>
+                                        <span class="signal-badge signal-pending">BUY</span>
+                                    </td>
+                                    <td>2285.50</td>
+                                    <td>2277.80</td>
+                                    <td>2309.60</td>
+                                    <td>1:3.5</td>
+                                    <td>12:05 EST</td>
+                                    <td>
+                                        <span class="flex items-center text-yellow-600">
+                                            <i class="bx bx-time-five mr-1"></i> Pending
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>2023-05-14 22:15</td>
-                                    <td>USD/JPY</td>
-                                    <td><span class="signal-sell">SELL</span></td>
-                                    <td>155.84</td>
-                                    <td>156.24</td>
-                                    <td>154.64</td>
-                                    <td><span class="status-stopped">Stopped</span></td>
-                                    <td><button class="action-btn detail">Details</button></td>
+                                    <td class="font-semibold">USD/CAD</td>
+                                    <td>
+                                        <span class="signal-badge signal-inactive">SELL</span>
+                                    </td>
+                                    <td>1.3715</td>
+                                    <td>1.3735</td>
+                                    <td>1.3655</td>
+                                    <td>1:3</td>
+                                    <td>09:45 EST</td>
+                                    <td>
+                                        <span class="flex items-center text-blue-600">
+                                            <i class="bx bx-trophy mr-1"></i> TP Hit
+                                        </span>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>2023-05-14 18:40</td>
-                                    <td>AUD/USD</td>
-                                    <td><span class="signal-buy">BUY</span></td>
-                                    <td>0.6582</td>
-                                    <td>0.6562</td>
-                                    <td>0.6642</td>
-                                    <td><span class="status-target">Target Hit</span></td>
-                                    <td><button class="action-btn detail">Details</button></td>
+                                    <td class="font-semibold">AUD/USD</td>
+                                    <td>
+                                        <span class="signal-badge signal-active">BUY</span>
+                                    </td>
+                                    <td>0.6587</td>
+                                    <td>0.6567</td>
+                                    <td>0.6647</td>
+                                    <td>1:3</td>
+                                    <td>11:50 EST</td>
+                                    <td>
+                                        <span class="flex items-center text-green-600">
+                                            <i class="bx bx-check-circle mr-1"></i> Active
+                                        </span>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
-            </section>
-
-            <section class="strategy-guide">
-                <h3>ICT Strategy Guide</h3>
-                <div class="guide-content">
-                    <h4>Overview</h4>
-                    <p>
-                        This strategy uses ICT (Inner Circle Trader) concepts based on liquidity, smart money manipulation, and time-based candle ranges to capture high-probability trade setups during the NY session.
-                    </p>
-
-                    <h4>Step-by-Step Guide</h4>
-                    
-                    <div class="guide-step">
-                        <h5>Step 1: Use the 4-Hour Timeframe</h5>
-                        <ul>
-                            <li>Go to the 4-hour chart.</li>
-                            <li>Mark the High and Low of the 4-hour candle from 9:00 PM to 1:00 AM (New York time).</li>
-                            <li>This candle range represents the liquidity zone for the session.</li>
-                        </ul>
+            </div>
+            
+            <!-- Right Column - Currency Analysis -->
+            <div class="lg:col-span-1">
+                <!-- Session Status -->
+                <div class="card bg-white p-5 mb-6">
+                    <h3 class="text-lg font-semibold mb-4">Trading Sessions</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                                <span>Sydney</span>
+                            </div>
+                            <span class="text-gray-500">Closed</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-red-500 mr-2"></div>
+                                <span>Tokyo</span>
+                            </div>
+                            <span class="text-gray-500">Closed</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-yellow-500 mr-2"></div>
+                                <span>London</span>
+                            </div>
+                            <span class="text-gray-500">Closing</span>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <div class="w-3 h-3 rounded-full bg-green-500 mr-2"></div>
+                                <span>New York</span>
+                            </div>
+                            <span class="text-gray-500">Open</span>
+                        </div>
                     </div>
-
-                    <div class="guide-step">
-                        <h5>Step 2: Drop to the 3-Minute Timeframe</h5>
-                        <ul>
-                            <li>Once the range is marked, move to the 3-minute chart.</li>
-                            <li>This smaller timeframe allows for precision entries.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-step">
-                        <h5>Step 3: Wait for a Liquidity Sweep</h5>
-                        <ul>
-                            <li>Watch for price to sweep either the High or Low of the marked 4H candle.</li>
-                            <li>This indicates a liquidity grab — a common manipulation before the real move.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-step">
-                        <h5>Step 4: Wait for CISD (Change in State of Delivery)</h5>
-                        <ul>
-                            <li>After the sweep, wait for a market structure shift (e.g., break of internal structure or BOS).</li>
-                            <li>This confirms a potential reversal and indicates smart money is active.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-step">
-                        <h5>Step 5: Enter the Trade</h5>
-                        <ul>
-                            <li>Look for an entry at one of the following zones:</li>
-                            <li>FVG (Fair Value Gap)</li>
-                            <li>BB (Breaker Block) Range</li>
-                            <li>OB (Order Block)</li>
-                            <li>These are institutional price levels where price often reacts.</li>
-                        </ul>
-                    </div>
-
-                    <div class="guide-step">
-                        <h5>Step 6: Set Stop Loss and Target</h5>
-                        <ul>
-                            <li>Place your SL (Stop Loss) according to Safe SL Theory just above/below the sweep or structure.</li>
-                            <li>Target a 1:3 Risk-to-Reward Ratio (RRR) or more.</li>
-                        </ul>
-                    </div>
-
-                    <h4>Pro Tips</h4>
-                    <ul class="pro-tips">
-                        <li>Be patient; let the sweep and CISD play out before entering.</li>
-                        <li>Always confirm with price action or liquidity reaction.</li>
-                        <li>Use time-of-day confluence for best results (especially during NY Open or London-NY overlap).</li>
-                        <li>Some pairs like EUR/USD and GBP/USD show stronger ICT patterns during specific sessions.</li>
-                        <li>Gold (XAU/USD) often shows exaggerated sweeps before reversals.</li>
-                    </ul>
                 </div>
-            </section>
+                
+                <!-- Range Analysis -->
+                <div class="card bg-white p-5 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">ICT 4H Range Analysis</h3>
+                        <span class="text-xs text-gray-500">Updated 5 min ago</span>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <div class="currency-card p-3 bg-gray-50 rounded-md bullish">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium">EUR/USD</span>
+                                <div class="flex items-center text-green-600 text-sm">
+                                    <i class="bx bxs-upvote mr-1"></i>
+                                    <span>Bullish</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">High:</span>
+                                    <span class="ml-2 font-medium">1.0758</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Low:</span>
+                                    <span class="ml-2 font-medium">1.0722</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Range:</span>
+                                    <span class="ml-2 font-medium">36 pips</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Sweep:</span>
+                                    <span class="ml-2 text-green-600 font-medium">Low</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="currency-card p-3 bg-gray-50 rounded-md bearish">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium">GBP/JPY</span>
+                                <div class="flex items-center text-red-600 text-sm">
+                                    <i class="bx bxs-downvote mr-1"></i>
+                                    <span>Bearish</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">High:</span>
+                                    <span class="ml-2 font-medium">191.25</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Low:</span>
+                                    <span class="ml-2 font-medium">190.45</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Range:</span>
+                                    <span class="ml-2 font-medium">80 pips</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Sweep:</span>
+                                    <span class="ml-2 text-red-600 font-medium">High</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="currency-card p-3 bg-gray-50 rounded-md neutral">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium">XAU/USD</span>
+                                <div class="flex items-center text-amber-600 text-sm">
+                                    <i class="bx bx-minus mr-1"></i>
+                                    <span>Awaiting Sweep</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">High:</span>
+                                    <span class="ml-2 font-medium">2290.20</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Low:</span>
+                                    <span class="ml-2 font-medium">2277.80</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Range:</span>
+                                    <span class="ml-2 font-medium">$12.40</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Sweep:</span>
+                                    <span class="ml-2 text-amber-600 font-medium">Pending</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="currency-card p-3 bg-gray-50 rounded-md bullish">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-medium">AUD/USD</span>
+                                <div class="flex items-center text-green-600 text-sm">
+                                    <i class="bx bxs-upvote mr-1"></i>
+                                    <span>Bullish</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-2 text-sm">
+                                <div>
+                                    <span class="text-gray-500">High:</span>
+                                    <span class="ml-2 font-medium">0.6598</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Low:</span>
+                                    <span class="ml-2 font-medium">0.6562</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Range:</span>
+                                    <span class="ml-2 font-medium">36 pips</span>
+                                </div>
+                                <div>
+                                    <span class="text-gray-500">Sweep:</span>
+                                    <span class="ml-2 text-green-600 font-medium">Low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Current New York Candle -->
+                <div class="card bg-white p-5 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold">Current NY 4H Candle</h3>
+                        <div class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
+                            <i class="bx bx-time mr-1"></i>
+                            <span id="candle-time-remaining">2h 35m left</span>
+                        </div>
+                    </div>
+                    
+                    <div id="ny-candle-chart" class="chart-container h-48 mb-4"></div>
+                    
+                    <div class="grid grid-cols-2 gap-3 text-sm">
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="text-gray-600">Open</span>
+                            <span class="font-medium" id="ny-candle-open">1.0735</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-gray-50 rounded">
+                            <span class="text-gray-600">Current</span>
+                            <span class="font-medium" id="ny-candle-current">1.0742</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-green-50 rounded">
+                            <span class="text-green-700">High</span>
+                            <span class="font-medium" id="ny-candle-high">1.0758</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2 bg-red-50 rounded">
+                            <span class="text-red-700">Low</span>
+                            <span class="font-medium" id="ny-candle-low">1.0722</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Trade Results -->
+                <div class="card bg-white p-5">
+                    <h3 class="text-lg font-semibold mb-4">Recent Trade Results</h3>
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-md">
+                            <div>
+                                <span class="font-medium">USD/CAD</span>
+                                <div class="text-xs text-gray-500">May 12, 09:45 EST</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-green-600 font-medium">+60 pips</div>
+                                <div class="text-xs text-gray-500">SELL @ 1.3715</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-md">
+                            <div>
+                                <span class="font-medium">GBP/USD</span>
+                                <div class="text-xs text-gray-500">May 12, 08:30 EST</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-green-600 font-medium">+45 pips</div>
+                                <div class="text-xs text-gray-500">BUY @ 1.2515</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-red-50 rounded-md">
+                            <div>
+                                <span class="font-medium">EUR/JPY</span>
+                                <div class="text-xs text-gray-500">May 11, 14:20 EST</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-red-600 font-medium">-15 pips</div>
+                                <div class="text-xs text-gray-500">BUY @ 164.85</div>
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center p-3 bg-green-50 rounded-md">
+                            <div>
+                                <span class="font-medium">XAU/USD</span>
+                                <div class="text-xs text-gray-500">May 11, 11:10 EST</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-green-600 font-medium">+$32.50</div>
+                                <div class="text-xs text-gray-500">SELL @ 2320.80</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </main>
 
-    <footer>
-        <div class="footer-content">
-            <p>© 2023 ICT Precision Trader. All rights reserved.</p>
-            <div class="social-links">
-                <a href="#" class="social-link">Discord</a>
-                <a href="#" class="social-link">Telegram</a>
-                <a href="#" class="social-link">Twitter</a>
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8">
+        <div class="container mx-auto px-4 md:px-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">ICT Precision Trader</h3>
+                    <p class="text-gray-400">Advanced trading application using ICT concepts for high-probability trade setups in the forex and commodities markets.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-white transition">Trading Strategy</a></li>
+                        <li><a href="#" class="hover:text-white transition">Signal Dashboard</a></li>
+                        <li><a href="#" class="hover:text-white transition">Market Analysis</a></li>
+                        <li><a href="#" class="hover:text-white transition">Trade Results</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li class="flex items-center">
+                            <i class="bx bx-envelope mr-2"></i>
+                            <a href="mailto:support@ictprecisiontrader.com" class="hover:text-white transition">support@ictprecisiontrader.com</a>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="bx bx-globe mr-2"></i>
+                            <a href="https://ictprecisiontrader.com" class="hover:text-white transition">www.ictprecisiontrader.com</a>
+                        </li>
+                    </ul>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="bx bxl-telegram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="bx bxl-twitter text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="bx bxl-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition">
+                            <i class="bx bxl-youtube text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <p>&copy; 2023 ICT Precision Trader. All rights reserved.</p>
             </div>
         </div>
     </footer>
 
-    <div id="settingsModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Trading Settings</h2>
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const options = { 
+                weekday: 'short', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true 
+            };
+            document.getElementById('current-time').textContent = now.toLocaleString('en-US', options);
             
-            <div class="settings-section">
-                <h3>Market Selection</h3>
-                <div class="setting-group">
-                    <label>Instrument Type</label>
-                    <div class="button-group">
-                        <button class="option-btn active">Forex</button>
-                        <button class="option-btn">Gold</button>
-                    </div>
-                </div>
-                
-                <div class="setting-group">
-                    <label>Currency Pair</label>
-                    <select id="settingsPair">
-                        <option value="EUR/USD">EUR/USD</option>
-                        <option value="GBP/USD">GBP/USD</option>
-                        <option value="USD/JPY">USD/JPY</option>
-                        <option value="AUD/USD">AUD/USD</option>
-                        <option value="XAU/USD">XAU/USD</option>
-                    </select>
-                </div>
-                
-                <div class="setting-group">
-                    <label>Timeframe</label>
-                    <div class="button-group">
-                        <button class="option-btn active">4H</button>
-                        <button class="option-btn">1H</button>
-                        <button class="option-btn">15M</button>
-                    </div>
-                </div>
-            </div>
+            // Update candle time remaining (mock)
+            const minutes = now.getMinutes();
+            const remainingHours = 3 - (now.getHours() % 4);
+            const remainingMinutes = 60 - minutes;
+            document.getElementById('candle-time-remaining').textContent = 
+                `${remainingHours}h ${remainingMinutes}m left`;
             
-            <div class="settings-section">
-                <h3>Strategy Settings</h3>
-                <div class="setting-group">
-                    <label>NY Range Time</label>
-                    <div class="time-range">
-                        <select id="rangeStart">
-                            <option value="9:00 PM">9:00 PM</option>
-                            <option value="8:00 PM">8:00 PM</option>
-                            <option value="10:00 PM">10:00 PM</option>
-                        </select>
-                        <span>to</span>
-                        <select id="rangeEnd">
-                            <option value="1:00 AM">1:00 AM</option>
-                            <option value="12:00 AM">12:00 AM</option>
-                            <option value="2:00 AM">2:00 AM</option>
-                        </select>
-                    </div>
-                </div>
+            // Simulate real-time updates
+            if (minutes % 5 === 0 && now.getSeconds() < 10) {
+                updateSignals();
+            }
+        }
+        
+        // Update signals randomly (for demo)
+        function updateSignals() {
+            const pairs = ['EUR/USD', 'GBP/JPY', 'XAU/USD', 'AUD/USD', 'USD/CAD'];
+            const directions = ['BUY', 'SELL'];
+            const statuses = ['Active', 'Pending', 'TP Hit', 'SL Hit'];
+            const statusClass = {
+                'Active': 'text-green-600',
+                'Pending': 'text-yellow-600',
+                'TP Hit': 'text-blue-600',
+                'SL Hit': 'text-red-600'
+            };
+            const statusIcon = {
+                'Active': 'bx-check-circle',
+                'Pending': 'bx-time-five',
+                'TP Hit': 'bx-trophy',
+                'SL Hit': 'bx-x-circle'
+            };
+            
+            // Update a random signal
+            const randomPair = pairs[Math.floor(Math.random() * pairs.length)];
+            const randomDirection = directions[Math.floor(Math.random() * directions.length)];
+            const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+            
+            // Update the NY candle values (mock)
+            const currentVal = parseFloat(document.getElementById('ny-candle-current').textContent);
+            const newVal = (currentVal + (Math.random() * 0.002 - 0.001)).toFixed(4);
+            document.getElementById('ny-candle-current').textContent = newVal;
+            
+            const highVal = parseFloat(document.getElementById('ny-candle-high').textContent);
+            if (parseFloat(newVal) > highVal) {
+                document.getElementById('ny-candle-high').textContent = newVal;
+            }
+            
+            const lowVal = parseFloat(document.getElementById('ny-candle-low').textContent);
+            if (parseFloat(newVal) < lowVal) {
+                document.getElementById('ny-candle-low').textContent = newVal;
+            }
+            
+            // Update active signals count
+            const activeSignalsCount = Math.floor(Math.random() * 3) + 7; // 7-9
+            document.getElementById('active-signals').textContent = activeSignalsCount;
+            
+            // Flash to indicate update
+            const elementsToFlash = [
+                document.getElementById('active-signals').parentElement.parentElement,
+                document.getElementById('ny-candle-current').parentElement
+            ];
+            
+            elementsToFlash.forEach(el => {
+                el.classList.add('bg-blue-50');
+                setTimeout(() => {
+                    el.classList.remove('bg-blue-50');
+                }, 500);
+            });
+        }
+        
+        // Market Overview Chart
+        function initializeMarketOverviewChart() {
+            const ctx = document.getElementById('market-overview-chart').getContext('2d');
+            
+            // Generate mock data
+            const labels = [];
+            const now = new Date();
+            for (let i = 20; i >= 0; i--) {
+                const date = new Date(now.getTime() - i * 3600000);
+                labels.push(date.getHours() + ':00');
+            }
+            
+            // Mock price data for EUR/USD
+            const startPrice = 1.0720;
+            const data = [1.0720, 1.0725, 1.0718, 1.0715, 1.0722, 1.0730, 1.0728, 1.0735, 
+                          1.0740, 1.0738, 1.0742, 1.0745, 1.0752, 1.0748, 1.0751, 1.0755, 
+                          1.0749, 1.0743, 1.0748, 1.0750, 1.0742];
+            
+            const marketChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'EUR/USD',
+                        data: data,
+                        fill: {
+                            target: 'origin',
+                            above: 'rgba(59, 130, 246, 0.1)',
+                        },
+                        borderColor: '#3b82f6',
+                        borderWidth: 2,
+                        pointBackgroundColor: '#3b82f6',
+                        pointRadius: 0,
+                        pointHoverRadius: 4,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            mode: 'index',
+                            intersect: false,
+                            callbacks: {
+                                label: function(context) {
+                                    return `EUR/USD: ${context.raw}`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                maxTicksLimit: 6,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                        y: {
+                            grid: {
+                                color: 'rgba(226, 232, 240, 0.5)'
+                            },
+                            ticks: {
+                                precision: 4,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    },
+                    interaction: {
+                        intersect: false,
+                        mode: 'index'
+                    }
+                }
+            });
+            
+            // NY Candle Chart
+            const nyCtx = document.getElementById('ny-candle-chart').getContext('2d');
+            const nyChart = new Chart(nyCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Current 4H Candle'],
+                    datasets: [{
+                        label: 'Price Range',
+                        data: [0.0036], // Range in pips
+                        backgroundColor: 'rgba(59, 130, 246, 0.2)',
+                        borderColor: '#3b82f6',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `Range: 36 pips`;
+                                },
+                                afterLabel: function(context) {
+                                    return `High: 1.0758 | Low: 1.0722`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: {
+                                display: false
+                            }
+                        },
+                        y: {
+                            display: false,
+                            max: 0.006
+                        }
+                    }
+                }
+            });
+            
+            // Timeframe buttons
+            document.querySelectorAll('.chart-timeframe').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    document.querySelectorAll('.chart-timeframe').forEach(btn => {
+                        btn.classList.remove('active', 'bg-blue-100', 'text-blue-700');
+                        btn.classList.add('bg-gray-100', 'text-gray-700');
+                    });
+                    
+                    // Add active class to clicked button
+                    this.classList.remove('bg-gray-100', 'text-gray-700');
+                    this.classList.add('active', 'bg-blue-100', 'text-blue-700');
+                    
+                    // Update chart based on timeframe (mock function)
+                    updateChartTimeframe(this.dataset.timeframe, marketChart);
+                });
+            });
+        }
+        
+        // Update chart based on timeframe selection (mock)
+        function updateChartTimeframe(timeframe, chart) {
+            // This would typically fetch new data based on the timeframe
+            // For demo purposes, we'll just modify the existing data
+            
+            const data = chart.data.datasets[0].data;
+            let newData = [...data];
+            
+            if (timeframe === '1W') {
+                // Make the chart more volatile for weekly view
+                newData = data.map(value => value + (Math.random() * 0.01 - 0.005));
                 
-                <div class="setting-group">
-                    <label>Risk-Reward Ratio: 3.0</label>
-                    <input type="range" min="1" max="5" value="3" step="0.5" id="rrrSlider">
-                </div>
+                // Update labels to show days instead of hours
+                const labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 
+                                'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Today'];
+                chart.data.labels = labels;
+            } else if (timeframe === '1M') {
+                // Make the chart show a longer trend for monthly view
+                newData = [];
+                const base = data[0];
+                for (let i = 0; i < data.length; i++) {
+                    const trend = i < 10 ? -0.0002 * i : 0.0002 * (i - 10);
+                    newData.push(base + trend + (Math.random() * 0.008 - 0.004));
+                }
                 
-                <div class="setting-group">
-                    <label>Entry Zones</label>
-                    <div class="checkbox-group">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="fvgCheck" checked>
-                            <label for="fvgCheck">FVG (Fair Value Gap)</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="bbCheck" checked>
-                            <label for="bbCheck">BB Range (Breaker Block)</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="obCheck" checked>
-                            <label for="obCheck">OB (Order Block)</label>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="setting-group">
-                    <label>Detection Algorithm Sensitivity</label>
-                    <div class="sensitivity-slider">
-                        <span>Low</span>
-                        <input type="range" min="1" max="10" value="5" id="sensitivitySlider">
-                        <span>High</span>
-                    </div>
-                </div>
-                
-                <button id="applySettings" class="apply-btn">Apply Settings</button>
-            </div>
-        </div>
-    </div>
-    
-    <script src="script.js"></script>
-    <!-- TradingView Widget Script -->
-<script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
-
+                // Update labels to show dates instead of hours
+                const now = new Date();
+                const labels = [];
+                for (let i = 20; i >= 0; i--) {
+                    const date = new Date(now.getTime() - i * 24 * 3600000);
+                    labels.push(`${date.getMonth() + 1}/${date.getDate()}`);
+                }
+                chart.data.labels = labels;
+            } else {
+                // Default 1D view - restore original data
+                // Update labels to show hours
+                const now = new Date();
+                const labels = [];
+                for (let i = 20; i >= 0; i--) {
+                    const date = new Date(now.getTime() - i * 3600000);
+                    labels.push(date.getHours() + ':00');
+                }
+                chart.data.labels = labels;
+            }
+            
+            chart.data.datasets[0].data = newData;
+            chart.update();
+        }
+        
+        // Initialize on document ready
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial time update
+            updateTime();
+            
+            // Set interval for time updates
+            setInterval(updateTime, 1000);
+            
+            // Initialize charts
+            initializeMarketOverviewChart();
+        });
+    </script>
 </body>
 </html>
